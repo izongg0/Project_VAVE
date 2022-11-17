@@ -1,6 +1,3 @@
-import pandas as pd
-
-
 def generate_data_features(data, window_size):
     result = pd.DataFrame()
 
@@ -13,11 +10,6 @@ def generate_data_features(data, window_size):
     return result
 
 
-def merge_ndarray_to_DF(list_data, axis=1):
-    result = pd.DataFrame()
-
-    for array in list_data:
-        temp = pd.DataFrame(array)
-        result = pd.concat([temp, result], axis=axis)
-
+def merge_data(top_data, bottom_data):
+    result = pd.concat([top_data, bottom_data], axis=0).reset_index(drop=True)
     return result
