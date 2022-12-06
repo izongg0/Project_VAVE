@@ -44,24 +44,25 @@
               ></button>
             </div>
             <div class="modal-body">
-              <input type="file" accept=".csv" value="파일 첨부" />
+              <form>
+                <input
+                  type="file"
+                  id="ex_file"
+                  ref="uploadFile"
+                  @change="onFileSelected()"
+                  accept="files/*"
+                />
+              </form>
             </div>
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-primary"
-                id="checkBtn"
-                style="width: 70px"
-              >
-                확인
-              </button>
               <button
                 type="button"
                 class="btn btn-secondary"
                 id="closeBtn"
                 data-bs-dismiss="modal"
+                @click="uploadFile()"
               >
-                Close
+                확인
               </button>
             </div>
           </div>
@@ -198,7 +199,7 @@ export default {
   data() {
     return {
       machine_name: 'machine_1',
-      aaaaa: 0
+      uploadcsvFile: ''
     }
   },
   setup() {
@@ -213,6 +214,7 @@ export default {
     axios.get('/api/email').then((res) => {
       users.email = res.data[0]['userEmail']
     })
+
     return { users }
   },
   created() {},
@@ -228,6 +230,20 @@ export default {
       } else {
         more.style.display = 'flex'
       }
+    },
+    onFileSelected(event) {
+      // 프론트에서 파일첨부한 파일을 변수에 넣음.
+      // console.log(this.$refs.uploadFile.files)
+      this.uploadcsvFile = this.$refs.uploadFile.files[0]
+    },
+    async uploadFile() {
+      // 확인버튼을 누르면 백앤드로 제출함
+      const fd = new FormData()
+      fd.append('uploadFile', this.uploadcsvFile)
+      // for (const value of fd.values()) {
+      //   console.log(value)
+      // }
+      await axios.post('/api/uploadFile', fd)
     }
   }
 }
