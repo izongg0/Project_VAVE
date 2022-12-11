@@ -1,7 +1,10 @@
-def tsne(data,components = 2):
-    tsne = TSNE(components = components)# 주성분을 몇개로 할지 결정
+from sklearn.manifold import TSNE
+import pandas as pd
+
+
+def tsne(data, components=2):
+    tsne = TSNE(n_components=components)
     tsne = tsne.fit_transform(data)
-    for i in range(components):
-        tsne_df = pd.DataFrame(tsne, columns = ['component' + str(i)])
+    tsne_df = pd.DataFrame(data=tsne, columns=[
+                           'component' + str(i+1)for i in range(components)])
     return tsne_df
-    
