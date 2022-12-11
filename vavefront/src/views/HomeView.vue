@@ -4,14 +4,19 @@
     <header>
       <div id="space"></div>
       <p id="title">VAVE</p>
-      <p style="color: black">-->{{ users.email }}</p>
       <div>
         <button type="button" class="btn btn-light addgroup">Mypage</button>
-        <button type="button" class="btn btn-light addgroup">Logout</button>
+        <button
+          type="button"
+          class="btn btn-light addgroup"
+          @click="MoveLogin()"
+        >
+          Logout
+        </button>
       </div>
     </header>
     <nav>
-      <button type="button" class="btn btn-light addgroup">그룹 추가</button>
+      <!-- <button type="button" class="btn btn-light addgroup">그룹 추가</button> -->
       <button
         type="button"
         class="btn btn-light addfile"
@@ -69,106 +74,66 @@
         </div>
       </div>
 
-      <div class="accordion" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-            <button
-              class="accordion-button collapsed groupbutton"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-collapseOne"
-              aria-expanded="false"
-              aria-controls="panelsStayOpen-collapseOne"
-            >
-              group_1
-            </button>
-          </h2>
-          <div
-            id="panelsStayOpen-collapseOne"
-            class="accordion-collapse collapse"
-            aria-labelledby="panelsStayOpen-headingOne"
-          >
-            <div class="accordion-body">
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">machine_1</li>
-                <li class="list-group-item">machine_2</li>
-                <li class="list-group-item">machine_3</li>
-                <li class="list-group-item">machine_4</li>
-                <li class="list-group-item">machine_5</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-            <button
-              class="accordion-button collapsed groupbutton"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-collapseTwo"
-              aria-expanded="false"
-              aria-controls="panelsStayOpen-collapseTwo"
-            >
-              group_2
-            </button>
-          </h2>
-          <div
-            id="panelsStayOpen-collapseTwo"
-            class="accordion-collapse collapse"
-            aria-labelledby="panelsStayOpen-headingTwo"
-          >
-            <div class="accordion-body">
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">machine_6</li>
-                <li class="list-group-item">machine_7</li>
-                <li class="list-group-item">machine_8</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-item">
-          <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-            <button
-              class="accordion-button collapsed groupbutton"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-collapseThree"
-              aria-expanded="false"
-              aria-controls="panelsStayOpen-collapseThree"
-            >
-              group_3
-            </button>
-          </h2>
-          <div
-            id="panelsStayOpen-collapseThree"
-            class="accordion-collapse collapse"
-            aria-labelledby="panelsStayOpen-headingThree"
-          >
-            <div class="accordion-body">
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">machine_9</li>
-                <li class="list-group-item">machine_10</li>
-                <li class="list-group-item">machine_11</li>
-                <li class="list-group-item">machine_12</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      <div class="list-group">
+        <button
+          type="button"
+          class="list-group-item list-group-item-action"
+          :key="t"
+          v-for="(filename, t) in file_list.file"
+          @click="file_click(filename['fileName'])"
+        >
+          {{ filename['originalName'] }}
+        </button>
       </div>
     </nav>
     <div id="machine">{{ machine_name }}</div>
+    <div style="display: flex">
+      <div class="graph"></div>
+      <div class="graph"></div>
+    </div>
     <div id="result">
       <div id="summary">
-        <div id="model_name">CNN</div>
+        <div class="model_name" style="font-size: 30px">
+          Method1
+          <p style="font-size: 21px">Autoencoding + MLP</p>
+        </div>
         <div id="performance_1">
-          <p>accuracy : 50%</p>
-          <p>recall : 50%</p>
+          <p>accuracy : {{ model_1.accuracy * 100 }}%</p>
+          <p>recall : {{ model_1.recall * 100 }}%</p>
         </div>
         <div id="performance_2">
-          <p>precision : 50%</p>
-          <p>specificity : 50%</p>
+          <p>precision : {{ model_1.precision * 100 }}%</p>
+          <p>specificity : {{ model_1.specificity * 100 }}%</p>
         </div>
-        <div id="warning">Warning : False</div>
+        <div id="warning">Warning : {{ model_1.failure }}</div>
+        <button id="detail1">Detail</button>
+      </div>
+      <div id="morespace">
+        <div id="space_1">
+          <div id="detail_1"></div>
+          <div id="detail_2"></div>
+        </div>
+        <div id="space_2">
+          <div id="detail_3"></div>
+          <div id="detail_4"></div>
+        </div>
+      </div>
+    </div>
+    <div id="result">
+      <div id="summary">
+        <div class="model_name">
+          Method2
+          <p style="font-size: 21px">PCA + Tsne + MLP</p>
+        </div>
+        <div id="performance_1">
+          <p>accuracy : {{ model_2.accuracy * 100 }}%</p>
+          <p>recall : {{ model_2.recall * 100 }}%</p>
+        </div>
+        <div id="performance_2">
+          <p>precision : {{ model_2.precision * 100 }}%</p>
+          <p>specificity : {{ model_2.specificity * 100 }}%</p>
+        </div>
+        <div id="warning">Warning : {{ model_2.failure }}</div>
         <button id="detail" @click="viewmore()">Detail</button>
       </div>
       <div id="morespace">
@@ -206,16 +171,64 @@ export default {
     const users = reactive({
       email: ''
     })
+    const file_list = reactive({
+      file: ''
+    })
+    const model_result = reactive({
+      result: ''
+    })
 
-    axios.get('api/test').then((res) => {
+    const model_1 = reactive({
+      accuracy: '',
+      precision: '',
+      recall: '',
+      specificity: '',
+      failure: ''
+    })
+    const model_2 = reactive({
+      accuracy: '',
+      precision: '',
+      recall: '',
+      specificity: '',
+      failure: ''
+    })
+
+    // const model_result_2 = reactive({
+    //   accuracy: '',
+    //   precision: '',
+    //   recall: '',
+    //   specificity: '',
+    //   failure: ''
+    // })
+
+    // axios.get('api/test').then((res) => {
+    //   console.log(res.data)
+    // })
+
+    axios.get('/api/frame/filelist').then((res) => {
+      file_list.file = res.data
       console.log(res.data)
     })
 
-    axios.get('/api/email').then((res) => {
-      users.email = res.data[0]['userEmail']
+    axios.get('/api/frame/result').then((res) => {
+      // console.log(res.data)
+      model_result.result = res.data
+      // console.log(model_result.result.length)
+      // users.email = res.data
     })
 
-    return { users }
+    axios.get('/api/frame/model').then((res) => {
+      console.log(res.data)
+      // users.email = res.data
+    })
+
+    // axios.get('/api/frame/graph').then((res) => {
+    //   console.log('그래프들')
+    //   console.log(res.data)
+    //   // users.email = res.data
+    // })
+
+    return { users, file_list, model_result, model_1, model_2 }
   },
   created() {},
   mounted() {},
@@ -244,6 +257,62 @@ export default {
       //   console.log(value)
       // }
       await axios.post('/api/uploadFile', fd)
+    },
+    MoveLogin() {
+      axios.delete('/api/login').then((res) => {
+        alert('로그아웃하였습니다.')
+        this.$router.push('/')
+      })
+    },
+    file_click(e) {
+      // console.log(e)
+      var result_list = ''
+      result_list = this.model_result.result
+      var cur_result1 = ''
+      var cur_result2 = ''
+      var detection1 = ''
+      var detection2 = ''
+      for (let i = 0; i < result_list.length; i += 2) {
+        if (e == result_list[i]['fileName']) {
+          cur_result1 = result_list[i]
+        }
+      }
+
+      for (let i = 1; i < result_list.length; i += 2) {
+        if (e == result_list[i]['fileName']) {
+          cur_result2 = result_list[i]
+        }
+      }
+      console.log(cur_result1['accuracy'])
+
+      // const model_1 = reactive({
+      //   accuracy: '',
+      //   precision: '',
+      //   recall: '',
+      //   specificity: '',
+      //   failure: ''
+      // })
+      if (cur_result1['failure'] == 0) {
+        detection1 = 'FALSE'
+      } else {
+        detection1 = 'TRUE'
+      }
+      if (cur_result2['failure'] == 0) {
+        detection2 = 'FALSE'
+      } else {
+        detection2 = 'TRUE'
+      }
+      this.model_1.accuracy = cur_result1['accuracy']
+      this.model_1.precision = cur_result1['precision']
+      this.model_1.recall = cur_result1['recall']
+      this.model_1.specificity = cur_result1['specificity']
+      this.model_1.failure = detection1
+      this.model_2.accuracy = cur_result2['accuracy']
+      this.model_2.precision = cur_result2['precision']
+      this.model_2.recall = cur_result2['recall']
+      this.model_2.specificity = cur_result2['specificity']
+      this.model_2.failure = detection2
+      console.log(cur_result2)
     }
   }
 }
@@ -296,15 +365,14 @@ nav {
   flex-direction: column;
   justify-content: space-between; */
 }
-.accordion *,
-.accordion {
+.list-group-item {
   background-color: transparent;
   color: black;
   font-size: 18px;
   border: none;
 }
-.accordion {
-  margin-top: 0px;
+.list-group {
+  margin-top: 10px;
 }
 
 .list-group-flush {
@@ -338,6 +406,11 @@ nav {
   border: 1px solid black;
   border-radius: 0;
 } */
+#fileBtn {
+  width: 200px;
+  height: 60px;
+  font-size: 20px;
+}
 #checkBtn {
   background-color: rgb(202, 198, 198);
   color: black;
@@ -349,9 +422,14 @@ nav {
   border: 1px solid black;
 }
 /* main */
+.graph {
+  border: 1px solid black;
+  width: 550px;
+  height: 200px;
+  margin-left: 50px;
+}
 #machine {
   color: black;
-
   margin-top: 10px;
   margin-left: 260px;
   text-align: left;
@@ -374,13 +452,14 @@ nav {
 #summary {
   display: flex;
 }
-#model_name {
+.model_name {
   margin-left: 20px;
   margin-top: 15px;
   /* border: 1px solid black; */
   height: 100px;
   font-size: 30px;
   margin-right: 40px;
+  width: 200px;
 }
 #performance_1,
 #performance_2 {
@@ -404,6 +483,12 @@ p {
   white-space: nowrap;
 }
 #detail {
+  height: 30px;
+  width: 70px;
+  margin-left: 20px;
+  margin-top: 80px;
+}
+#detail1 {
   height: 30px;
   width: 70px;
   margin-left: 20px;
