@@ -1,29 +1,20 @@
-<<<<<<< HEAD
-=======
-from tensorflow.keras import layers
+from tensorflow import layers
 import warnings
 
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
->>>>>>> f514b382ca4787aed938743803cc3f94e622bae0
 import argparse
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-<<<<<<< HEAD
-=======
-
->>>>>>> f514b382ca4787aed938743803cc3f94e622bae0
 import convert_data_transform_to_pca_vector as pca
 import tsne as ts
 import visualization as vi
 import raw_to_fourier as fr
 import data_window_size as cut
-<<<<<<< HEAD
 import warnings
-=======
 
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
