@@ -11,7 +11,9 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 
-import joblib
+import pickle
+
+import raw_to_fourier as fr
 
 import warnings
 warnings.simplefilter(
@@ -36,7 +38,7 @@ fr_dataset = []
 for dataset in dataset_list:
     normal_dataset = dataset[:, 0]
     abnormal_dataset = dataset[:, 1]
-    freq = fr.fs_to_freq(n=1250, fs=args.fs)
+    # freq = fr.fs_to_freq(n=1250, fs=args.fs)
     fr_normal = fr.raw_to_fourier(normal_dataset)
     fr_abnormal = fr.raw_to_fourier(abnormal_dataset)
     fr_dataset.append([fr_normal, fr_abnormal])
@@ -69,6 +71,7 @@ all_dataset = np.concatenate(
 all_df = pd.DataFrame(all_dataset.T, columns=list(range(0, 8)))
 all_df["label"] = 0
 all_df["label"][5000:] = 1
+
 # PCA solution
 pca = PCA(n_components=3)  # 주성분을 몇개로 할지 결정
 pca_features = pca.fit_transform(all_df.iloc[:, 0: 8])
@@ -98,5 +101,8 @@ mlp = MLPClassifier(hidden_layer_sizes=(10, 128, 256,), activation='logistic',
                     learning_rate_init=0.1, max_iter=500)  # 객체 생성
 
 mlp.fit(x_train_scaled, y_train_all)    # 훈련하기
-joblib.dump(mlp, "model_pickle/pca_t-sne_model.pkl")
+
+pickle_out = open("../modelback/pickle_model/pca_t-sne_model.pkl","wb")
+pickle.dump(mlp, pickle_out)
+pickle_out.close()
 # # print(mlp.score(x_test_scaled, y_test))      # 정확도 평가

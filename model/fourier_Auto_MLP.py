@@ -1,19 +1,21 @@
-from tensorflow.keras import layers
 import warnings
 
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 import argparse
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+import pickle
 
 import raw_to_fourier as fr
 import warnings
 
-from sklearn.preprocessing import StandardScaler
+# from sklearn.preprocessing import StandardScaler
 
 from tensorflow import keras
+from tensorflow.keras import layers
 
 
 warnings.simplefilter(
@@ -76,10 +78,10 @@ x_train_all, x_test, y_train_all, y_test = \
     train_test_split(all_df.iloc[:, 0: 8], all_df["label"], test_size=0.2,
                      random_state=42)  # 훈련 데이터와 테스트 데이터 분류
 
-scaler = StandardScaler()   # 객체 만들기
-scaler.fit(x_train_all)     # 변환 규칙을 익히기
-x_train_scaled = scaler.transform(x_train_all)  # 데이터를 표준화 전처리
-x_test_scaled = scaler.transform(x_test)
+# scaler = StandardScaler()   # 객체 만들기
+# scaler.fit(x_train_all)     # 변환 규칙을 익히기
+# x_train_scaled = scaler.transform(x_train_all)  # 데이터를 표준화 전처리
+# x_test_scaled = scaler.transform(x_test)
 
 encoding_dim = 32
 
@@ -103,9 +105,10 @@ autoencoder.fit(x_train_all, x_train_all,
                 validation_data=(x_test, x_test))
 
 encoded_x_train = encoder.predict(x_train_all)
-decoded_x_train = decoder.predict(encoded_x_train)
+# decoded_x_train = decoder.predict(encoded_x_train)
 
 encoded_x_test = encoder.predict(x_test)
+encoder.save("../modelback/pickle_model/auto_encoder")
 
 mlp = MLPClassifier(hidden_layer_sizes=(64, 128, 256, 64), activation='logistic',
                     solver='sgd', alpha=0.01, batch_size=32,
@@ -113,5 +116,11 @@ mlp = MLPClassifier(hidden_layer_sizes=(64, 128, 256, 64), activation='logistic'
 
 mlp.fit(encoded_x_train, y_train_all)    # 훈련하기
 
-print(mlp.predict(encoded_x_test))
-print(mlp.score(encoded_x_test, y_test))      # 정확도 평가
+weigh = encoder.get_weights()
+
+pickle_mlp = open("../modelback/pickle_model/auto_mlp.pkl","wb")
+pickle.dump(mlp, pickle_mlp)
+pickle_mlp.close()
+
+# print(mlp.predict(encoded_x_test))
+# print(mlp.score(encoded_x_test, y_test))      # 정확도 평가
