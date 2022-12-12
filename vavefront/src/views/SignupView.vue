@@ -1,5 +1,5 @@
 <template>
-  <div class = "tcolor">
+  <div class="tcolor">
     <title>VAVE_Signup</title>
     <div class="totalContainer">
       * 표시된 항목은 필수 항목입니다. 반드시 입력해주세요.
@@ -16,7 +16,7 @@
           required
           @keyup.enter="goSignup()"
         />
-      </div> 
+      </div>
       <div>
         <span id="duplicate">ID중복 여부를 확인해주세요.</span>
         <button id="duplicate_button" @click="checkID()">
@@ -48,12 +48,14 @@
           id="signup_pw"
           name="userPassword"
           maxlength="16"
-          required 
+          required
           @keyup.enter="goSignup()"
         />
       </div>
       <div>
-        <label for="userCheckPassword" class="midname"><b>* Check password</b></label>
+        <label for="userCheckPassword" class="midname"
+          ><b>* Check password</b></label
+        >
       </div>
       <div>
         <input
@@ -67,13 +69,13 @@
           @keyup.enter="goSignup()"
         />
       </div>
-          <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div>
-          <span>
-            <button type="submit" @click="MoveMain()"><b>Sing up</b></button>
-            <button id="backButton" @click="MoveLogin()">뒤로가기</button>
-          </span>
-        </div>
+      <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div>
+      <span>
+        <button type="submit" @click="MoveMain()"><b>Sing up</b></button>
+        <button id="backButton" @click="MoveLogin()">뒤로가기</button>
+      </span>
     </div>
+  </div>
 </template>
 
 <script>
@@ -86,7 +88,7 @@ export default {
     return {
       passwordCheck: '',
       passwordCheckFlag: true,
-      passwordValidFlag: true,
+      passwordValidFlag: true
     }
   },
   setup() {
@@ -94,7 +96,7 @@ export default {
       signup: {
         id: '',
         name: '',
-        pw: '',
+        pw: ''
       }
     })
 
@@ -110,7 +112,7 @@ export default {
   unmounted() {},
   methods: {
     MoveLogin() {
-      this.$router.push('/login')
+      this.$router.push('/')
     },
     MoveMain() {
       const content = this.signupinf.signup
@@ -184,7 +186,7 @@ export default {
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-.tcolor{
+.tcolor {
   background-color: rgb(212, 212, 212);
   height: 100vh;
 }
@@ -195,7 +197,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.midname{
+.midname {
   float: left;
 }
 .signupContainer {
@@ -214,15 +216,15 @@ input[type='password'] {
   box-sizing: border-box;
   background-color: rgb(129, 129, 129);
 }
-input::placeholder{
-  color : black
+input::placeholder {
+  color: black;
 }
 /*button*/
 button[type='submit'] {
   background-color: rgb(129, 129, 129);
   border: none;
   cursor: pointer;
-  float:right;
+  float: right;
 }
 #overlapButton {
   float: right;
@@ -231,7 +233,7 @@ button[type='submit'] {
   float: left;
   background-color: rgb(129, 129, 129);
   border: 1px solid rgb(172, 171, 171);
-  color : black;
+  color: black;
 }
 /*button hover*/
 button:hover {
@@ -260,6 +262,6 @@ button:hover {
   background-color: rgb(129, 129, 129);
   border: 1px solid rgb(172, 171, 171);
   float: right;
-  color : black;
+  color: black;
 }
 </style>

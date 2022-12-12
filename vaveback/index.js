@@ -64,31 +64,23 @@ app.post("/api/login", async (req, res) => {
     res.send(404);
   }
 });
-
+// 로그인 끝
+// 로그아웃
 app.delete("/api/login", async (req, res) => {
-  //로그아웃
   if (req.cookies && req.cookies.token) {
     res.clearCookie("token");
   }
   res.sendStatus(200);
 });
 
-// 로그인 끝
-
+//
 app.use("/files", express.static("files"));
 
 app.get("/api/test", async (req, res) => {
   res.send(test);
 });
 
-// app.get("/api/email", async (req, res) => {
-//   const result = await database.run(
-//     `SELECT userEmail FROM USERS WHERE userid=1`
-//   );
-//   res.send(result);
-// });
-
-// 프론트에서 파일 받기
+// 프론트에서 파일 받고 디비에 넣기
 const fileSavePath = "files/";
 const storage = multer.diskStorage({
   //파일저장경로
@@ -119,8 +111,6 @@ app.post(
     const file_csv = fs.readFileSync(csvfile); // csv파일 읽어오기
     const csvtostring = file_csv.toString(); // 읽어온 csv 파일을 string 형식으로 바꿈
     json_data = csvToJSON(csvtostring);
-    // console.log("파일오리지널");
-    // console.log(req.file);
     filename = req.file["filename"];
     await database.run(
       `INSERT INTO file (userEmail,fileName,originalName) VALUES ('${curuser}','${req.file["filename"]}','${req.file["originalname"]}')`
@@ -129,18 +119,15 @@ app.post(
 );
 
 // 사이드바에 제공 ( 메인에서 같이 사용 )
-
 app.get("/api/frame/filelist", async (req, res) => {
   const File_list = await database.run(
     `SELECT fileName,originalName FROM file WHERE userEmail = "${curuser}"`
   );
   res.send(File_list);
 });
-
-// 메인페이지에 제공
-
+// 메인페이지
+// 파일의 각 모델 별 고장여부 가져오기
 app.get("/api/frame/result", async (req, res) => {
-  // 파일에 파일이 가진 모든 결과 가져오기
   const Model_result = await database.run(
     `SELECT * FROM result WHERE fileName IN
     (SELECT fileName FROM file WHERE userEmail ='${curuser}');`
@@ -148,20 +135,56 @@ app.get("/api/frame/result", async (req, res) => {
   res.send(Model_result);
 });
 
+// 모델 두개 이름이랑 성능 가져오기
 app.get("/api/frame/model", async (req, res) => {
-  // 모델 두개 가져오기
-  const Model_name = await database.run(`SELECT modelId,modelName FROM model `);
+  const Model_name = await database.run(`SELECT * FROM model `);
   res.send(Model_name);
 });
 
-// app.get("/api/frame/graph", async (req, res) => {
-//   // 파일이 가진 모든 그래프 데이터 가져오기
-//   const Model_graph = await database.run(
-//     `SELECT modelId,fileName,xvalue,yvalue FROM result WHERE fileName = "${curfile}" `
-//   );
-//   res.send(Model_graph);
-// });
+// 회원가입
+app.post("/api/signup", async (req, res) => {
+  await database.run(
+    `INSERT INTO users (userEmail,userPassword,userName) VALUES ('${req.body.content.id}','${req.body.content.pw}','${req.body.content.name}')`
+  );
+});
 
+app.post("/api/checkid", async (req, res) => {
+  const query = await database.run(`SELECT userEmail FROM users;`);
+  let result = "사용가능";
+  for (i in query) {
+    const exist = query[i].userEmail;
+    if (req.body.content === exist) {
+      result = "사용불가능";
+    }
+  }
+  res.send(result);
+});
+
+// 마이페이지에 제공
+app.get("/api/mypage", async (req, res) => {
+  const user_information = await database.run(
+    `SELECT userEmail,userName FROM users WHERE userEmail = "${curuser}"`
+  );
+  res.send(user_information);
+});
+// 프로필 편집
+app.post("/api/mypage/edit", async (req, res) => {
+  const editname = req.body.content[0];
+  const editpw = req.body.content[1];
+  if (editname == "") {
+    await database.run(
+      `UPDATE users SET userPassword = '${editpw}' WHERE userEmail = '${curuser}';`
+    );
+  } else if (editpw == "") {
+    await database.run(
+      `UPDATE users SET userName = '${editname}' WHERE userEmail = '${curuser}';`
+    );
+  } else {
+    await database.run(
+      `UPDATE users SET userName = '${editname}',userPassword = '${editpw}' WHERE userEmail = '${curuser}';`
+    );
+  }
+});
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
