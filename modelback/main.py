@@ -84,7 +84,6 @@ async def create_item(data: Data):
     fr_dataset = []
     for dataset in dataset_list:
         fr_data = fr.raw_to_fourier(dataset)
-
         fr_dataset.append(fr_data)
 
     fr_dataset = np.array(fr_dataset)
