@@ -4,6 +4,7 @@
     <header>
       <div id="space"></div>
       <p id="title">VAVE</p>
+<<<<<<< HEAD
       <div>
         <button
           class="btn btn-primary addgroup btn-light"
@@ -60,6 +61,16 @@
     </header>
     <nav>
       <!-- <button type="button" class="btn btn-light addgroup">그룹 추가</button> -->
+=======
+      <p style="color: black">-->{{ users.email }}</p>
+      <div>
+        <button type="button" class="btn btn-light addgroup">Mypage</button>
+        <button type="button" class="btn btn-light addgroup">Logout</button>
+      </div>
+    </header>
+    <nav>
+      <button type="button" class="btn btn-light addgroup">그룹 추가</button>
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
       <button
         type="button"
         class="btn btn-light addfile"
@@ -117,6 +128,7 @@
         </div>
       </div>
 
+<<<<<<< HEAD
       <div class="list-group">
         <button
           type="button"
@@ -178,6 +190,109 @@
         </div>
         <div id="warning">Warning : {{ model_2.failure }}</div>
         <!-- <button id="detail" @click="viewmore()">Detail</button> -->
+=======
+      <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+            <button
+              class="accordion-button collapsed groupbutton"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseOne"
+              aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseOne"
+            >
+              group_1
+            </button>
+          </h2>
+          <div
+            id="panelsStayOpen-collapseOne"
+            class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingOne"
+          >
+            <div class="accordion-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">machine_1</li>
+                <li class="list-group-item">machine_2</li>
+                <li class="list-group-item">machine_3</li>
+                <li class="list-group-item">machine_4</li>
+                <li class="list-group-item">machine_5</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+            <button
+              class="accordion-button collapsed groupbutton"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseTwo"
+              aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseTwo"
+            >
+              group_2
+            </button>
+          </h2>
+          <div
+            id="panelsStayOpen-collapseTwo"
+            class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingTwo"
+          >
+            <div class="accordion-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">machine_6</li>
+                <li class="list-group-item">machine_7</li>
+                <li class="list-group-item">machine_8</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+            <button
+              class="accordion-button collapsed groupbutton"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#panelsStayOpen-collapseThree"
+              aria-expanded="false"
+              aria-controls="panelsStayOpen-collapseThree"
+            >
+              group_3
+            </button>
+          </h2>
+          <div
+            id="panelsStayOpen-collapseThree"
+            class="accordion-collapse collapse"
+            aria-labelledby="panelsStayOpen-headingThree"
+          >
+            <div class="accordion-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">machine_9</li>
+                <li class="list-group-item">machine_10</li>
+                <li class="list-group-item">machine_11</li>
+                <li class="list-group-item">machine_12</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="machine">{{ machine_name }}</div>
+    <div id="result">
+      <div id="summary">
+        <div id="model_name">CNN</div>
+        <div id="performance_1">
+          <p>accuracy : 50%</p>
+          <p>recall : 50%</p>
+        </div>
+        <div id="performance_2">
+          <p>precision : 50%</p>
+          <p>specificity : 50%</p>
+        </div>
+        <div id="warning">Warning : False</div>
+        <button id="detail" @click="viewmore()">Detail</button>
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
       </div>
       <div id="morespace">
         <div id="space_1">
@@ -212,6 +327,7 @@ export default {
   },
   setup() {
     const users = reactive({
+<<<<<<< HEAD
       email: 'asdasd',
       name: 'asdasd'
     })
@@ -268,10 +384,25 @@ export default {
     // })
 
     return { users, file_list, model_result, model_1, model_2 }
+=======
+      email: ''
+    })
+
+    axios.get('api/test').then((res) => {
+      console.log(res.data)
+    })
+
+    axios.get('/api/email').then((res) => {
+      users.email = res.data[0]['userEmail']
+    })
+
+    return { users }
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   },
   created() {},
   mounted() {},
   methods: {
+<<<<<<< HEAD
     MoveLogin() {
       this.$router.push('/login')
     },
@@ -291,12 +422,29 @@ export default {
     // },
     onFileSelected(event) {
       // 프론트에서 파일첨부한 파일을 변수에 넣음.
+=======
+    viewmore() {
+      // more = this.parentElement.previousElementSibling
+
+      const more = document.getElementById('detail').parentElement.nextSibling
+      // more.parentElement.previousElementSibling.style.height = '10px'
+      if (more.style.display === 'flex') {
+        more.style.display = 'none'
+      } else {
+        more.style.display = 'flex'
+      }
+    },
+    onFileSelected(event) {
+      // 프론트에서 파일첨부한 파일을 변수에 넣음.
+      // console.log(this.$refs.uploadFile.files)
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
       this.uploadcsvFile = this.$refs.uploadFile.files[0]
     },
     async uploadFile() {
       // 확인버튼을 누르면 백앤드로 제출함
       const fd = new FormData()
       fd.append('uploadFile', this.uploadcsvFile)
+<<<<<<< HEAD
 
       await axios.post('/api/uploadFile', fd)
     },
@@ -339,6 +487,12 @@ export default {
       this.model_1.machine = a
       this.model_1.failure = detection1
       this.model_2.failure = detection2
+=======
+      // for (const value of fd.values()) {
+      //   console.log(value)
+      // }
+      await axios.post('/api/uploadFile', fd)
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
     }
   }
 }
@@ -346,11 +500,19 @@ export default {
 <style scoped>
 /* template */
 template {
+<<<<<<< HEAD
+=======
+  /* background-color: rgb(131, 130, 130); */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   height: 100vh;
   width: 100vw;
   margin: 0;
 }
 .full {
+<<<<<<< HEAD
+=======
+  width: 100vw;
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   height: 100vh;
   background-color: rgb(212, 212, 212);
 }
@@ -358,6 +520,10 @@ template {
 header {
   display: flex;
   height: 70px;
+<<<<<<< HEAD
+=======
+  width: 100%;
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   background-color: #646464;
 
   display: flex;
@@ -377,6 +543,7 @@ header {
 /* nav */
 nav {
   background-color: rgb(129, 129, 129);
+<<<<<<< HEAD
   height: calc(100vh - 70px);
   width: 250px;
   margin: 0;
@@ -393,6 +560,28 @@ nav {
 }
 .list-group {
   margin-top: 10px;
+=======
+  height: calc(100vh - 55px);
+  width: 250px;
+  /* padding-top: 15px; */
+  /* padding-bottom: 25px; */
+  margin: 0;
+
+  float: left;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-between; */
+}
+.accordion *,
+.accordion {
+  background-color: transparent;
+  color: black;
+  font-size: 18px;
+  border: none;
+}
+.accordion {
+  margin-top: 0px;
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
 }
 
 .list-group-flush {
@@ -415,11 +604,25 @@ nav {
   height: 50px;
   font-size: 18px;
 }
+<<<<<<< HEAD
 #fileBtn {
   width: 200px;
   height: 60px;
   font-size: 20px;
 }
+=======
+/* #fileBtn {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  margin-left: 125px;
+  width: 110px;
+  height: 60px;
+  margin-top: 50px;
+  border-color: white;
+  border: 1px solid black;
+  border-radius: 0;
+} */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
 #checkBtn {
   background-color: rgb(202, 198, 198);
   color: black;
@@ -431,6 +634,7 @@ nav {
   border: 1px solid black;
 }
 /* main */
+<<<<<<< HEAD
 .graph {
   border: 1px solid black;
   width: 550px;
@@ -447,11 +651,29 @@ nav {
   width: 1200px;
   font-size: 40px;
   font-weight: bold;
+=======
+#machine {
+  color: black;
+
+  margin-top: 10px;
+  margin-left: 260px;
+  text-align: left;
+  width: 1200px;
+  font-size: 30px;
+  font-weight: bold;
+  /* border: 1px solid black; */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
 }
 #result {
   color: black;
   margin-top: 10px;
   margin-left: 260px;
+<<<<<<< HEAD
+=======
+  /* width: 70vw; */
+  /* height: 120px; */
+  /* border: 1px solid black; */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   background-color: rgb(170, 169, 169);
   overflow: hidden;
   border-radius: 10px;
@@ -459,6 +681,7 @@ nav {
 #summary {
   display: flex;
 }
+<<<<<<< HEAD
 .model_name {
   margin-left: 20px;
   margin-top: 15px;
@@ -469,6 +692,20 @@ nav {
 }
 #performance_1,
 #performance_2 {
+=======
+#model_name {
+  margin-left: 20px;
+  margin-top: 15px;
+  /* border: 1px solid black; */
+  height: 100px;
+  font-size: 30px;
+  margin-right: 40px;
+}
+#performance_1,
+#performance_2 {
+  /* margin-left: 80px; */
+  /* border: 1px solid black; */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
   height: 100px;
   font-size: 25px;
   width: 20vw;
@@ -492,12 +729,15 @@ p {
   margin-left: 20px;
   margin-top: 80px;
 }
+<<<<<<< HEAD
 #detail1 {
   height: 30px;
   width: 70px;
   margin-left: 20px;
   margin-top: 80px;
 }
+=======
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
 #morespace {
   /* border: 1px solid black; */
   height: 400px;
@@ -533,6 +773,7 @@ p {
   width: 35vw;
   height: 70px;
 }
+<<<<<<< HEAD
 
 .mypageright {
   width: 80%;
@@ -569,4 +810,10 @@ p {
   box-sizing: border-box;
   background-color: rgb(212, 212, 212);
 }
+=======
+/* #space_1,
+#space_2 {
+  border: 1px solid black;
+} */
+>>>>>>> a8be6cb9f1b168b43afdfb85e8afe08457a26350
 </style>
