@@ -64,31 +64,23 @@ app.post("/api/login", async (req, res) => {
     res.send(404);
   }
 });
-
+// 로그인 끝
+// 로그아웃
 app.delete("/api/login", async (req, res) => {
-  //로그아웃
   if (req.cookies && req.cookies.token) {
     res.clearCookie("token");
   }
   res.sendStatus(200);
 });
 
-// 로그인 끝
-
+//
 app.use("/files", express.static("files"));
 
 app.get("/api/test", async (req, res) => {
   res.send(test);
 });
 
-// app.get("/api/email", async (req, res) => {
-//   const result = await database.run(
-//     `SELECT userEmail FROM USERS WHERE userid=1`
-//   );
-//   res.send(result);
-// });
-
-// 프론트에서 파일 받기
+// 프론트에서 파일 받고 디비에 넣기
 const fileSavePath = "files/";
 const storage = multer.diskStorage({
   //파일저장경로
@@ -119,28 +111,85 @@ app.post(
     const file_csv = fs.readFileSync(csvfile); // csv파일 읽어오기
     const csvtostring = file_csv.toString(); // 읽어온 csv 파일을 string 형식으로 바꿈
     json_data = csvToJSON(csvtostring);
-    // console.log("파일오리지널");
-    // console.log(req.file);
-    filename = req.file["filename"];
+    const filename = req.file["filename"]; // 현재 받아온 파일 이름 변수저장
     await database.run(
       `INSERT INTO file (userEmail,fileName,originalName) VALUES ('${curuser}','${req.file["filename"]}','${req.file["originalname"]}')`
+    );
+
+    const example_result = {
+      pca: "abnormal",
+      auto: "normal",
+      fourier_freq: [
+        [0.0, 0.001438935],
+        [100.0, 2.001438935],
+        [200.0, 4.001438935],
+        [300.0, 2.081438935],
+        [400.0, 4.031438935],
+        [500.0, 2.001438935],
+      ],
+    };
+
+    const fourier_xval = [];
+    const fourier_yval = [];
+    const timedata = csvtostring.split("\r\n"); // 시간데이터 리스트로
+    timedata.shift(); // abnormal 칸 없어짐
+    // 널값제거
+    const time_yval = timedata.filter((element) => {
+      return element !== undefined && element !== null && element !== "";
+    });
+
+    function range(start, end) {
+      let array = [];
+      for (let i = start; i < end; ++i) {
+        array.push(i);
+      }
+      return array;
+    }
+    const time_xval = range(1, time_yval.length + 1);
+
+    // 모델api에서 넘어온 데이터 전처리
+    for (i in example_result["fourier_freq"]) {
+      fourier_xval.push(example_result["fourier_freq"][i][0]);
+      fourier_yval.push(example_result["fourier_freq"][i][1]);
+    }
+    for (i in example_result["time"]) {
+      fourier_xval.push(example_result["time"][i][0]);
+      fourier_yval.push(example_result["time"][i][1]);
+    }
+
+    // 전처리한 결과 db에 저장
+    for (i in time_xval) {
+      // 타임시리즈 디비 넣기
+      // 타임 도메인 = 1 , 주파수 도메인 = 2
+      await database.run(
+        `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${time_xval[i]}','${time_yval[i]}',1)`
+      );
+    }
+    for (i in example_result["fourier_freq"]) {
+      // 푸리에 결과 디비 넣기
+      await database.run(
+        `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${fourier_xval[i]}','${fourier_yval[i]}',2)`
+      );
+    }
+    await database.run(
+      `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',1,'${example_result["pca"]}')`
+    );
+    await database.run(
+      `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',2,'${example_result["auto"]}')`
     );
   }
 );
 
 // 사이드바에 제공 ( 메인에서 같이 사용 )
-
 app.get("/api/frame/filelist", async (req, res) => {
   const File_list = await database.run(
     `SELECT fileName,originalName FROM file WHERE userEmail = "${curuser}"`
   );
   res.send(File_list);
 });
-
-// 메인페이지에 제공
-
+// 메인페이지
+// 파일의 각 모델 별 고장여부 가져오기
 app.get("/api/frame/result", async (req, res) => {
-  // 파일에 파일이 가진 모든 결과 가져오기
   const Model_result = await database.run(
     `SELECT * FROM result WHERE fileName IN
     (SELECT fileName FROM file WHERE userEmail ='${curuser}');`
@@ -148,20 +197,74 @@ app.get("/api/frame/result", async (req, res) => {
   res.send(Model_result);
 });
 
+// 모델 두개 이름이랑 성능 가져오기
 app.get("/api/frame/model", async (req, res) => {
-  // 모델 두개 가져오기
-  const Model_name = await database.run(`SELECT modelId,modelName FROM model `);
+  const Model_name = await database.run(`SELECT * FROM model `);
   res.send(Model_name);
 });
+// 그래프 가져오기
+app.post("/api/graph", async (req, res) => {
+  console.log(req.body.e);
+});
+// 회원가입
+app.post("/api/signup", async (req, res) => {
+  await database.run(
+    `INSERT INTO users (userEmail,userPassword,userName) VALUES ('${req.body.content.id}','${req.body.content.pw}','${req.body.content.name}')`
+  );
+});
 
-// app.get("/api/frame/graph", async (req, res) => {
-//   // 파일이 가진 모든 그래프 데이터 가져오기
-//   const Model_graph = await database.run(
-//     `SELECT modelId,fileName,xvalue,yvalue FROM result WHERE fileName = "${curfile}" `
-//   );
-//   res.send(Model_graph);
-// });
+app.post("/api/checkid", async (req, res) => {
+  const query = await database.run(`SELECT userEmail FROM users;`);
+  let result = "사용가능";
+  for (i in query) {
+    const exist = query[i].userEmail;
+    if (req.body.content === exist) {
+      result = "사용불가능";
+    }
+  }
+  res.send(result);
+});
 
+// 마이페이지에 제공
+app.get("/api/mypage", async (req, res) => {
+  const user_information = await database.run(
+    `SELECT userEmail,userName FROM users WHERE userEmail = "${curuser}"`
+  );
+  res.send(user_information);
+});
+// 프로필 편집
+app.post("/api/mypage/edit", async (req, res) => {
+  const editname = req.body.content[0];
+  const editpw = req.body.content[1];
+  if (editname == "") {
+    await database.run(
+      `UPDATE users SET userPassword = '${editpw}' WHERE userEmail = '${curuser}';`
+    );
+  } else if (editpw == "") {
+    await database.run(
+      `UPDATE users SET userName = '${editname}' WHERE userEmail = '${curuser}';`
+    );
+  } else {
+    await database.run(
+      `UPDATE users SET userName = '${editname}',userPassword = '${editpw}' WHERE userEmail = '${curuser}';`
+    );
+  }
+});
+// 백앤드 테스트
+app.get("/api/test/test", async (req, res) => {
+  const file_csv = fs.readFileSync("files/timetest.csv"); // csv파일 읽어오기
+  const csvtostring = file_csv.toString();
+  const tlist = csvtostring.split("\r\n");
+  tlist.shift();
+
+  for (i in tlist) {
+    if (i == 0) {
+      continue;
+    }
+    console.log(tlist[i]);
+  }
+  res.send(tlist);
+});
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
