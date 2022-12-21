@@ -130,9 +130,23 @@
       </div>
     </nav>
     <div id="machine">{{ model_1.machine }}</div>
+    <p>{{ graph_time_data }}</p>
+    <p>{{ graph_time_data1 }}</p>
     <div style="display: flex">
-      <div class="graph"></div>
-      <div class="graph"></div>
+      <div class="graph">
+        <Bar
+          id="my-chart-id"
+          :options="chartOptions"
+          :data="graph_time_data1"
+        />
+      </div>
+      <div class="graph1">
+        <Bar
+          id="my-chart-id"
+          :options="chartOptions1"
+          :data="graph_fourier_data"
+        />
+      </div>
     </div>
     <div id="result">
       <div id="summary">
@@ -195,18 +209,36 @@
 
 <script>
 // import Frame from '@/components/Frame.vue'
-// import { reactive } from 'vue'
-import axios from 'axios'
 import { reactive } from 'vue'
+import axios from 'axios'
+// import { reactive } from 'vue'
+import { Bar } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
+} from 'chart.js'
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'HomeView',
   components: {
+    Bar
     // Frame: Frame
   },
   data() {
     return {
-      machine_name: 'machine_1',
+      // chartData: {
+      //   labels: this.graph_time_data.labels, // x
+      //   datasets: [{ data: this.graph_time_data.datasets[0]['data'] }] // y
+      // },
+      chartOptions: {
+        responsive: false
+      },
       uploadcsvFile: ''
     }
   },
@@ -238,6 +270,21 @@ export default {
       failure: ''
     })
 
+    const graph_time_data = reactive({
+      labels: [],
+      datasets: [{ data: [] }]
+    })
+
+    const graph_time_data1 = reactive({
+      labels: [1, 2, 3],
+      datasets: [{ data: [40, 20, 12] }]
+    })
+
+    const graph_fourier_data = reactive({
+      labels: [''],
+      datasets: [{ data: [''] }]
+    })
+
     axios.get('/api/mypage').then((res) => {
       users.email = res.data[0]['userEmail']
       users.name = res.data[0]['userName']
@@ -267,7 +314,16 @@ export default {
     //   // users.email = res.data
     // })
 
-    return { users, file_list, model_result, model_1, model_2 }
+    return {
+      users,
+      file_list,
+      model_result,
+      model_1,
+      model_2,
+      graph_time_data,
+      graph_fourier_data,
+      graph_time_data1
+    }
   },
   created() {},
   mounted() {},
@@ -331,7 +387,31 @@ export default {
       this.model_1.failure = detection1
       this.model_2.failure = detection2
 
-      axios.post('/api/graph', { e }).then((res) => {})
+      axios.post('/api/graph', { e }).then((res) => {
+        const timeseires_x = []
+        const timeseires_y = []
+        const fourier_x = []
+        const fourier_y = []
+        for (let i in res.data) {
+          if (res.data[i]['domain'] == 1) {
+            timeseires_x.push(res.data[i]['xvalue'])
+            timeseires_y.push(res.data[i]['yvalue'])
+          } else {
+            fourier_x.push(res.data[i]['xvalue'])
+            fourier_y.push(res.data[i]['yvalue'])
+          }
+        }
+        console.log(this.graph_fourier_data['datasets'][0]['data'])
+        this.graph_time_data.labels = timeseires_x
+        this.graph_time_data.datasets[0]['data'] = timeseires_y
+        this.graph_fourier_data.labels = fourier_x
+        this.graph_fourier_data.datasets[0]['data'] = fourier_y
+        this.four.labels = timeseires_x
+        this.four.datasets[0]['data'] = timeseires_y
+        this.tim.labels = fourier_x
+        this.tim.datasets[0]['data'] = fourier_y
+        console.log(this.graph_fourier_data['datasets'][0]['data'])
+      })
     }
   }
 }
@@ -380,6 +460,9 @@ nav {
   color: black;
   font-size: 20px;
   border: none;
+  height: 30px;
+  /* transform: translateY(-50%);
+  justify-content: space-between; */
 }
 .list-group-item:hover {
   background-color: #777777;
@@ -426,9 +509,16 @@ nav {
 /* main */
 .graph {
   border: 1px solid black;
-  width: 550px;
+  width: 80%;
   height: 200px;
-  margin-left: 50px;
+  margin-left: 17%;
+}
+.graph1 {
+  border: 1px solid black;
+  width: 80%;
+  height: 200px;
+  margin-top: 20px;
+  margin-left: 17%;
 }
 #machine {
   color: black;
@@ -561,5 +651,9 @@ p {
   border: 1px solid rgb(172, 171, 171);
   box-sizing: border-box;
   background-color: rgb(212, 212, 212);
+}
+#my-chart-id {
+  width: 100% !important;
+  height: 180px !important;
 }
 </style>

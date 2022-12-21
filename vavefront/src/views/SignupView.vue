@@ -69,7 +69,7 @@
           @keyup.enter="goSignup()"
         />
       </div>
-      <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div>
+      <!-- <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div> -->
       <span>
         <button type="submit" @click="MoveMain()"><b>Sing up</b></button>
         <button id="backButton" @click="MoveLogin()">뒤로가기</button>

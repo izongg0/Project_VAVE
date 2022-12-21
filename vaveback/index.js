@@ -91,10 +91,12 @@ const storage = multer.diskStorage({
     callback(null, new Date().valueOf() + path.extname(file.originalname));
   },
 });
+
 const upload = multer({ storage: storage });
 global.csvfile = "";
 global.jsonfile = "";
 global.curfile = "";
+
 app.post(
   "/api/uploadFile",
   upload.single("uploadFile"), // 프론트에서 가져온 파일을 files 폴더에 저장
@@ -116,6 +118,19 @@ app.post(
       `INSERT INTO file (userEmail,fileName,originalName) VALUES ('${curuser}','${req.file["filename"]}','${req.file["originalname"]}')`
     );
 
+    app.post("/data/", async (req, res) => {
+      res.send(json_data);
+    });
+
+    app.get("/data/", async (req, res) => {
+      console.log(req.body);
+    });
+
+    // request("http://localhost:8000/data/", function (error, response, body) {
+    //   if (!error && response.statusCode == 200) {
+    //     console.log(body);
+    //   }
+    // });
     const example_result = {
       pca: "abnormal",
       auto: "normal",
@@ -158,25 +173,25 @@ app.post(
     }
 
     // 전처리한 결과 db에 저장
-    for (i in time_xval) {
-      // 타임시리즈 디비 넣기
-      // 타임 도메인 = 1 , 주파수 도메인 = 2
-      await database.run(
-        `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${time_xval[i]}','${time_yval[i]}',1)`
-      );
-    }
-    for (i in example_result["fourier_freq"]) {
-      // 푸리에 결과 디비 넣기
-      await database.run(
-        `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${fourier_xval[i]}','${fourier_yval[i]}',2)`
-      );
-    }
-    await database.run(
-      `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',1,'${example_result["pca"]}')`
-    );
-    await database.run(
-      `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',2,'${example_result["auto"]}')`
-    );
+    // for (i in time_xval) {
+    //   // 타임시리즈 디비 넣기
+    //   // 타임 도메인 = 1 , 주파수 도메인 = 2
+    //   await database.run(
+    //     `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${time_xval[i]}','${time_yval[i]}',1)`
+    //   );
+    // }
+    // for (i in example_result["fourier_freq"]) {
+    //   // 푸리에 결과 디비 넣기
+    //   await database.run(
+    //     `INSERT INTO graph (fileName,xvalue,yvalue,domain) VALUES ('${filename}','${fourier_xval[i]}','${fourier_yval[i]}',2)`
+    //   );
+    // }
+    // await database.run(
+    //   `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',1,'${example_result["pca"]}')`
+    // );
+    // await database.run(
+    //   `INSERT INTO result (fileName,modelId,failure) VALUES ('${filename}',2,'${example_result["auto"]}')`
+    // );
   }
 );
 
@@ -204,7 +219,12 @@ app.get("/api/frame/model", async (req, res) => {
 });
 // 그래프 가져오기
 app.post("/api/graph", async (req, res) => {
+  console.log("aaaaaa");
   console.log(req.body.e);
+  const graph_value = await database.run(
+    `SELECT xvalue,yvalue,domain FROM graph WHERE fileName = "${req.body.e}"`
+  );
+  res.send(graph_value);
 });
 // 회원가입
 app.post("/api/signup", async (req, res) => {

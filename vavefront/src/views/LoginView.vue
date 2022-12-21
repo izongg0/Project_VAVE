@@ -2,7 +2,7 @@
   <div class="tcolor">
     <title>VAVE_Login</title>
     <div class="totalContainer">
-      <span id="logo"><img src="../assets/logo.png" /></span>
+      <p style="font-size: 100px; color: aliceblue;"><b>VAVE</b></p>
       <div>
         <label for="userEmail" class="midname"><b>Email</b></label>
         <input
