@@ -130,10 +130,19 @@
       </div>
     </nav>
     <div id="machine">{{ model_1.machine }}</div>
+    <!-- <p>{{ graph_time_data }}</p>
     <div style="display: flex">
-      <div class="graph"></div>
-      <div class="graph"></div>
-    </div>
+      <div class="graph">
+        <Bar id="my-chart-id" :options="chartOptions" :data="graph_time_data" />
+      </div>
+      <div class="graph1">
+        <Bar
+          id="my-chart-id"
+          :options="chartOptions1"
+          :data="graph_fourier_data"
+        />
+      </div>
+    </div> -->
     <div id="result">
       <div id="summary">
         <div class="model_name" style="font-size: 30px">
@@ -148,7 +157,9 @@
           <p>precision : {{ model_1.precision * 100 }}%</p>
           <p>specificity : {{ model_1.specificity * 100 }}%</p>
         </div>
-        <div id="warning">Warning : {{ model_1.failure }}</div>
+        <!-- <div id="warning">Warning : {{ model_1.failure }}</div> -->
+        <div id="warning">Warning : normal</div>
+
         <!-- <button id="detail1">Detail</button> -->
       </div>
       <div id="morespace">
@@ -176,7 +187,9 @@
           <p>precision : {{ model_2.precision * 100 }}%</p>
           <p>specificity : {{ model_2.specificity * 100 }}%</p>
         </div>
-        <div id="warning">Warning : {{ model_2.failure }}</div>
+        <!-- <div id="warning">Warning : {{ model_2.failure }}</div> -->
+        <div id="warning">Warning : normal</div>
+
         <!-- <button id="detail" @click="viewmore()">Detail</button> -->
       </div>
       <div id="morespace">
@@ -195,18 +208,36 @@
 
 <script>
 // import Frame from '@/components/Frame.vue'
-// import { reactive } from 'vue'
-import axios from 'axios'
 import { reactive } from 'vue'
+import axios from 'axios'
+// import { reactive } from 'vue'
+// import { Bar } from 'vue-chartjs'
+// import {
+//   Chart as ChartJS,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   BarElement,
+//   CategoryScale,
+//   LinearScale
+// } from 'chart.js'
+// ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'HomeView',
-  conponents: {
+  components: {
+    // Bar
     // Frame: Frame
   },
   data() {
     return {
-      machine_name: 'machine_1',
+      // chartData: {
+      //   labels: this.graph_time_data.labels, // x
+      //   datasets: [{ data: this.graph_time_data.datasets[0]['data'] }] // y
+      // },
+      chartOptions: {
+        responsive: true
+      },
       uploadcsvFile: ''
     }
   },
@@ -238,6 +269,21 @@ export default {
       failure: ''
     })
 
+    const graph_time_data = reactive({
+      labels: [],
+      datasets: [{ data: [] }]
+    })
+
+    const graph_time_data1 = reactive({
+      labels: [1, 2, 3],
+      datasets: [{ data: [40, 20, 12] }]
+    })
+
+    const graph_fourier_data = reactive({
+      labels: [''],
+      datasets: [{ data: [''] }]
+    })
+
     axios.get('/api/mypage').then((res) => {
       users.email = res.data[0]['userEmail']
       users.name = res.data[0]['userName']
@@ -267,7 +313,16 @@ export default {
     //   // users.email = res.data
     // })
 
-    return { users, file_list, model_result, model_1, model_2 }
+    return {
+      users,
+      file_list,
+      model_result,
+      model_1,
+      model_2,
+      graph_time_data,
+      graph_fourier_data,
+      graph_time_data1
+    }
   },
   created() {},
   mounted() {},
@@ -312,8 +367,7 @@ export default {
       result_list = this.model_result.result
       var cur_result1 = ''
       var cur_result2 = ''
-      var detection1 = ''
-      var detection2 = ''
+
       for (let i = 0; i < result_list.length; i += 2) {
         if (e == result_list[i]['fileName']) {
           cur_result1 = result_list[i]
@@ -325,20 +379,38 @@ export default {
           cur_result2 = result_list[i]
         }
       }
+      var detection1 = cur_result1['failure']
+      var detection2 = cur_result2['failure']
 
-      if (cur_result1['failure'] == 0) {
-        detection1 = 'FALSE'
-      } else {
-        detection1 = 'TRUE'
-      }
-      if (cur_result2['failure'] == 0) {
-        detection2 = 'FALSE'
-      } else {
-        detection2 = 'TRUE'
-      }
       this.model_1.machine = a
       this.model_1.failure = detection1
       this.model_2.failure = detection2
+
+      axios.post('/api/graph', { e }).then((res) => {
+        const timeseires_x = []
+        const timeseires_y = []
+        const fourier_x = []
+        const fourier_y = []
+        for (let i in res.data) {
+          if (res.data[i]['domain'] == 1) {
+            timeseires_x.push(res.data[i]['xvalue'])
+            timeseires_y.push(res.data[i]['yvalue'])
+          } else {
+            fourier_x.push(res.data[i]['xvalue'])
+            fourier_y.push(res.data[i]['yvalue'])
+          }
+        }
+        console.log(this.graph_fourier_data['datasets'][0]['data'])
+        this.graph_time_data.labels = timeseires_x
+        this.graph_time_data.datasets[0]['data'] = timeseires_y
+        this.graph_fourier_data.labels = fourier_x
+        this.graph_fourier_data.datasets[0]['data'] = fourier_y
+        this.four.labels = timeseires_x
+        this.four.datasets[0]['data'] = timeseires_y
+        this.tim.labels = fourier_x
+        this.tim.datasets[0]['data'] = fourier_y
+        console.log(this.graph_fourier_data['datasets'][0]['data'])
+      })
     }
   }
 }
@@ -387,6 +459,9 @@ nav {
   color: black;
   font-size: 20px;
   border: none;
+  height: 30px;
+  /* transform: translateY(-50%);
+  justify-content: space-between; */
 }
 .list-group-item:hover {
   background-color: #777777;
@@ -433,9 +508,16 @@ nav {
 /* main */
 .graph {
   border: 1px solid black;
-  width: 550px;
+  width: 80%;
   height: 200px;
-  margin-left: 50px;
+  margin-left: 17%;
+}
+.graph1 {
+  border: 1px solid black;
+  width: 80%;
+  height: 200px;
+  margin-top: 20px;
+  margin-left: 17%;
 }
 #machine {
   color: black;
@@ -454,7 +536,7 @@ nav {
   margin-left: 260px;
   background-color: rgb(170, 169, 169);
   overflow: hidden;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 #summary {
   display: flex;
@@ -568,5 +650,9 @@ p {
   border: 1px solid rgb(172, 171, 171);
   box-sizing: border-box;
   background-color: rgb(212, 212, 212);
+}
+#my-chart-id {
+  width: 100% !important;
+  height: 180px !important;
 }
 </style>

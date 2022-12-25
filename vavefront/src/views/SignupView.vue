@@ -69,7 +69,7 @@
           @keyup.enter="goSignup()"
         />
       </div>
-      <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div>
+      <!-- <div v-if="!passwordCheckFlag">비밀번호가 동일하지 않습니다.</div> -->
       <span>
         <button type="submit" @click="MoveMain()"><b>Sing up</b></button>
         <button id="backButton" @click="MoveLogin()">뒤로가기</button>
@@ -150,17 +150,17 @@ export default {
     MoveBack() {
       this.$router.push('/')
     },
-    // passwordValid() {
-    //   if (
-    //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,16}$/.test(
-    //       this.signupinf.signup.password
-    //     )
-    //   ) {
-    //     this.passwordValidFlag = true
-    //   } else {
-    //     this.passwordValidFlag = false
-    //   }
-    // },
+    passwordValid() {
+      if (
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,16}$/.test(
+          this.signupinf.signup.password
+        )
+      ) {
+        this.passwordValidFlag = true
+      } else {
+        this.passwordValidFlag = false
+      }
+    },
     passwordCheckValid() {
       if (this.signupinf.signup.pw === this.passwordCheck) {
         this.passwordCheckFlag = true

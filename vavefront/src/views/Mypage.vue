@@ -130,7 +130,8 @@ export default {
       const content = [name_edit, pw_edit]
       console.log(content)
       axios.post('/api/mypage/edit', { content }).then((res) => {})
-      this.$router.push('/')
+      confirm('변경사항을 저장하시겠습니까?')
+      this.$router.push('/main')
     },
     MoveMypage() {
       this.$router.push('/mypage')
@@ -190,6 +191,7 @@ header {
   background-color: rgb(230, 219, 219);
   height: 70%;
   width: 50%;
+  background-color: #8a8787;
 }
 #myedit {
   font-size: 40px;
