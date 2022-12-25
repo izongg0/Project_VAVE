@@ -118,19 +118,20 @@ app.post(
       `INSERT INTO file (userEmail,fileName,originalName) VALUES ('${curuser}','${req.file["filename"]}','${req.file["originalname"]}')`
     );
 
-    app.post("/data/", async (req, res) => {
-      res.send(json_data);
-    });
+    // app.post("/data/", async (req, res) => {
+    //   res.send(json_data);
+    // });
 
-    app.get("/data/", async (req, res) => {
-      console.log(req.body);
-    });
+    // app.get("/data/", async (req, res) => {
+    //   console.log(req.body);
+    // });
 
     // request("http://localhost:8000/data/", function (error, response, body) {
     //   if (!error && response.statusCode == 200) {
     //     console.log(body);
     //   }
     // });
+
     const example_result = {
       pca: "abnormal",
       auto: "normal",
@@ -204,6 +205,7 @@ app.get("/api/frame/filelist", async (req, res) => {
 });
 // 메인페이지
 // 파일의 각 모델 별 고장여부 가져오기
+
 app.get("/api/frame/result", async (req, res) => {
   const Model_result = await database.run(
     `SELECT * FROM result WHERE fileName IN
@@ -226,6 +228,7 @@ app.post("/api/graph", async (req, res) => {
   );
   res.send(graph_value);
 });
+
 // 회원가입
 app.post("/api/signup", async (req, res) => {
   await database.run(
@@ -246,12 +249,14 @@ app.post("/api/checkid", async (req, res) => {
 });
 
 // 마이페이지에 제공
+
 app.get("/api/mypage", async (req, res) => {
   const user_information = await database.run(
     `SELECT userEmail,userName FROM users WHERE userEmail = "${curuser}"`
   );
   res.send(user_information);
 });
+
 // 프로필 편집
 app.post("/api/mypage/edit", async (req, res) => {
   const editname = req.body.content[0];

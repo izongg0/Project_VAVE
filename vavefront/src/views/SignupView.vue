@@ -150,17 +150,17 @@ export default {
     MoveBack() {
       this.$router.push('/')
     },
-    // passwordValid() {
-    //   if (
-    //     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,16}$/.test(
-    //       this.signupinf.signup.password
-    //     )
-    //   ) {
-    //     this.passwordValidFlag = true
-    //   } else {
-    //     this.passwordValidFlag = false
-    //   }
-    // },
+    passwordValid() {
+      if (
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,16}$/.test(
+          this.signupinf.signup.password
+        )
+      ) {
+        this.passwordValidFlag = true
+      } else {
+        this.passwordValidFlag = false
+      }
+    },
     passwordCheckValid() {
       if (this.signupinf.signup.pw === this.passwordCheck) {
         this.passwordCheckFlag = true

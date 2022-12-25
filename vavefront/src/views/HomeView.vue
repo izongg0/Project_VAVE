@@ -130,15 +130,10 @@
       </div>
     </nav>
     <div id="machine">{{ model_1.machine }}</div>
-    <p>{{ graph_time_data }}</p>
-    <p>{{ graph_time_data1 }}</p>
+    <!-- <p>{{ graph_time_data }}</p>
     <div style="display: flex">
       <div class="graph">
-        <Bar
-          id="my-chart-id"
-          :options="chartOptions"
-          :data="graph_time_data1"
-        />
+        <Bar id="my-chart-id" :options="chartOptions" :data="graph_time_data" />
       </div>
       <div class="graph1">
         <Bar
@@ -147,7 +142,7 @@
           :data="graph_fourier_data"
         />
       </div>
-    </div>
+    </div> -->
     <div id="result">
       <div id="summary">
         <div class="model_name" style="font-size: 30px">
@@ -162,7 +157,9 @@
           <p>precision : {{ model_1.precision * 100 }}%</p>
           <p>specificity : {{ model_1.specificity * 100 }}%</p>
         </div>
-        <div id="warning">Warning : {{ model_1.failure }}</div>
+        <!-- <div id="warning">Warning : {{ model_1.failure }}</div> -->
+        <div id="warning">Warning : normal</div>
+
         <!-- <button id="detail1">Detail</button> -->
       </div>
       <div id="morespace">
@@ -190,7 +187,9 @@
           <p>precision : {{ model_2.precision * 100 }}%</p>
           <p>specificity : {{ model_2.specificity * 100 }}%</p>
         </div>
-        <div id="warning">Warning : {{ model_2.failure }}</div>
+        <!-- <div id="warning">Warning : {{ model_2.failure }}</div> -->
+        <div id="warning">Warning : normal</div>
+
         <!-- <button id="detail" @click="viewmore()">Detail</button> -->
       </div>
       <div id="morespace">
@@ -212,22 +211,22 @@
 import { reactive } from 'vue'
 import axios from 'axios'
 // import { reactive } from 'vue'
-import { Bar } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+// import { Bar } from 'vue-chartjs'
+// import {
+//   Chart as ChartJS,
+//   Title,
+//   Tooltip,
+//   Legend,
+//   BarElement,
+//   CategoryScale,
+//   LinearScale
+// } from 'chart.js'
+// ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'HomeView',
   components: {
-    Bar
+    // Bar
     // Frame: Frame
   },
   data() {
@@ -237,7 +236,7 @@ export default {
       //   datasets: [{ data: this.graph_time_data.datasets[0]['data'] }] // y
       // },
       chartOptions: {
-        responsive: false
+        responsive: true
       },
       uploadcsvFile: ''
     }
@@ -537,7 +536,7 @@ nav {
   margin-left: 260px;
   background-color: rgb(170, 169, 169);
   overflow: hidden;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 #summary {
   display: flex;

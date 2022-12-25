@@ -130,6 +130,7 @@ export default {
       const content = [name_edit, pw_edit]
       console.log(content)
       axios.post('/api/mypage/edit', { content }).then((res) => {})
+      confirm('변경사항을 저장하시겠습니까?')
       this.$router.push('/main')
     },
     MoveMypage() {
