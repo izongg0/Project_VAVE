@@ -113,6 +113,7 @@ async def create_item(data: Data):
     else:
       auto_result = "normal"
 
+
     fourier_freq_data = []
 
     for i in range(len(fr_data_list)):
