@@ -16,6 +16,7 @@ import pickle
 import raw_to_fourier as fr
 
 import warnings
+
 warnings.simplefilter(
     action='ignore', category=FutureWarning)  # FutureWarning 제거
 

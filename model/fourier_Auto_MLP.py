@@ -83,7 +83,7 @@ x_train_all, x_test, y_train_all, y_test = \
 # x_train_scaled = scaler.transform(x_train_all)  # 데이터를 표준화 전처리
 # x_test_scaled = scaler.transform(x_test)
 
-encoding_dim = 32
+encoding_dim = 3
 
 input_img = keras.Input(shape=(8,))
 encoded = layers.Dense(encoding_dim, activation='relu')(input_img)
@@ -108,7 +108,7 @@ encoded_x_train = encoder.predict(x_train_all)
 # decoded_x_train = decoder.predict(encoded_x_train)
 
 encoded_x_test = encoder.predict(x_test)
-encoder.save("../modelback/pickle_model/auto_encoder")
+# encoder.save("../modelback/pickle_model/auto_encoder")
 
 mlp = MLPClassifier(hidden_layer_sizes=(64, 128, 256, 64), activation='logistic',
                     solver='sgd', alpha=0.01, batch_size=32,
@@ -116,11 +116,9 @@ mlp = MLPClassifier(hidden_layer_sizes=(64, 128, 256, 64), activation='logistic'
 
 mlp.fit(encoded_x_train, y_train_all)    # 훈련하기
 
-weigh = encoder.get_weights()
-
-pickle_mlp = open("../modelback/pickle_model/auto_mlp.pkl","wb")
-pickle.dump(mlp, pickle_mlp)
-pickle_mlp.close()
+# pickle_mlp = open("../modelback/pickle_model/auto_mlp.pkl","wb")
+# pickle.dump(mlp, pickle_mlp)
+# pickle_mlp.close()
 
 # print(mlp.predict(encoded_x_test))
-# print(mlp.score(encoded_x_test, y_test))      # 정확도 평가
+print(mlp.score(encoded_x_test, y_test))      # 정확도 평가
